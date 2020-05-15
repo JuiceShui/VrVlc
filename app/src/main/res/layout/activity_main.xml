@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/iv_angle_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="30dp"
+        android:background="@color/color_black_mask"
+        android:padding="16dp"
+        android:src="@mipmap/ic_angle_reset" />
+
+    <LinearLayout
+        android:id="@+id/ll_vr_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.demo.vlcvr.LongPressImageView
+            android:id="@+id/iv_roll_left"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/ic_roll_left" />
+
+        <com.demo.vlcvr.LongPressImageView
+            android:id="@+id/iv_roll_right"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/ic_roll_right" />
+
+        <com.demo.vlcvr.SouthPointer
+            android:id="@+id/sp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            app:sp_scale_long_color="#ffffff"
+            app:sp_scale_short_color="#efefef" />
+
+        <com.demo.vlcvr.HorizontalPointer
+            android:id="@+id/hp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            app:hp_scale_long_color="#ffffff"
+            app:hp_scale_short_color="#efefef" />
+
+        <com.demo.vlcvr.VerticalPointer
+            android:id="@+id/vp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            app:vp_scale_long_color="#ffffff"
+            app:vp_scale_short_color="#efefef" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_option_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_option_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="当前坐标"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_angel_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="视角切换"
+                    android:textColor="@color/colorAccent"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_camera_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="镜头切换"
+
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_take_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="实时拍照"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_capture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="视频截屏"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_camera_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="摄像头信息"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_live_push"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="实时上传"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_ipc_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="历史视频"
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_ipc_local_steam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/color_black_mask_dark"
+                    android:text="本地视频流"
+                    android:textColor="@color/colorAccent" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/iv_option"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:src="@mipmap/ic_launcher_round" />
+    </LinearLayout>
+</FrameLayout>

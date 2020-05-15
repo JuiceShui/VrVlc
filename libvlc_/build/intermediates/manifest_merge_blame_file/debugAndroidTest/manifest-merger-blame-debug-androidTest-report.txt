@@ -1,0 +1,36 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.videolan.test" >
+4
+5    <uses-sdk
+5-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:5:5-74
+6        android:minSdkVersion="22"
+6-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:5:15-41
+7        android:targetSdkVersion="29" />
+7-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:5:42-71
+8
+9    <instrumentation
+9-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:11:5-15:67
+10        android:name="android.test.InstrumentationTestRunner"
+10-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:11:22-75
+11        android:functionalTest="false"
+11-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:14:22-52
+12        android:handleProfiling="false"
+12-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:13:22-53
+13        android:label="Tests for org.videolan.test"
+13-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:15:22-65
+14        android:targetPackage="org.videolan.test" />
+14-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:12:22-63
+15
+16    <application
+16-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:7:5-9:19
+17        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+17-->[androidx.core:core:1.0.0] C:\Users\Administrator\.gradle\caches\transforms-2\files-2.1\799659d157cba173c3391744d4f4133c\core-1.0.0\AndroidManifest.xml:22:18-86
+18        android:debuggable="true" >
+18-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:7:18-43
+19        <uses-library android:name="android.test.runner" />
+19-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:8:9-60
+19-->D:\android\VlcVr\libvlc_\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger3870145967416400150.xml:8:23-57
+20    </application>
+21
+22</manifest>
