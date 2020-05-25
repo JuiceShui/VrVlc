@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivAngleReset;
     private ImageView ivRollLeft;
     private ImageView ivRollRight;
-    private String url = "/sdcard/Download/vr3601.mp4";
-    // private String url="rtsp://192.168.2.61/ff_test/123";
+    //private String url = "/sdcard/Download/vr3601.mp4";
+    private String url="rtsp://192.168.2.61/ff_test/123";
     private TouchEventDelegate delegate;
     private final Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
