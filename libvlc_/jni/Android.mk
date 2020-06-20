@@ -1,4 +1,5 @@
 LOCAL_PATH := $(call my-dir)
+LOCAL_PROGUARD_ENABLED := disabled
 
 # libvlcjni
 include $(CLEAR_VARS)

@@ -12,7 +12,7 @@ android {
         versionCode versionJconterCode
         versionName versionJcenter
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "arm64-v8a"
         }
     }
 

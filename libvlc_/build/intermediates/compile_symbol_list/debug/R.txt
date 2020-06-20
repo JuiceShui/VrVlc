@@ -19,6 +19,7 @@ int attr layout_insetEdge 0x0
 int attr layout_keyline 0x0
 int attr statusBarBackground 0x0
 int attr ttcIndex 0x0
+int color black 0x0
 int color notification_action_color_filter 0x0
 int color notification_icon_bg_color 0x0
 int color notification_material_background_media_default_color 0x0

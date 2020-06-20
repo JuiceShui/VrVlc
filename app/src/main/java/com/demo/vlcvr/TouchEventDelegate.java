@@ -125,7 +125,7 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
                     mTouchAction = TOUCH_MOVE;
                     final float yaw = mFov * -x_changed / (float) mSurfaceXDisplayRange;
                     final float pitch = mFov * -y_changed / (float) mSurfaceXDisplayRange;
-                    Log.e("Tag yaw pitch", yaw + "  " + pitch);
+                    //Log.e("Tag yaw pitch", yaw + "  " + pitch);
                     Message message = new Message();
                     message.what = MainActivity.CHANGE_POINTER;
                     Bundle bundle = new Bundle();

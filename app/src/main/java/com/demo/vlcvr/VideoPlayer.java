@@ -57,6 +57,7 @@ public class VideoPlayer implements IVLCVout.Callback {
     private Disposable mStartPlayDisposable;
     private Media media;
     private TextureView mTexture;
+    private boolean isVr = true;
 
     public void startPlay(String source) {
         this.audioSource = source;
@@ -73,7 +74,7 @@ public class VideoPlayer implements IVLCVout.Callback {
                                         @Override
                                         public void accept(Long aLong) throws Exception {
                                             if (mSurface != null) {
-                                                init(mSurface);
+                                                init(mSurface,isVr);
                                             } else if (mTexture != null) {
                                                 init(mTexture);
                                             }
@@ -151,7 +152,7 @@ public class VideoPlayer implements IVLCVout.Callback {
                                         voutCount++;
                                         if (voutCount > rePlayVoutCount) {//如果vout次数大于20  则表示链接成功但是无画面的情况
                                             if (mSurface != null) {
-                                                init(mSurface);
+                                                init(mSurface, isVr);
                                             } else {
                                                 init(mTexture);
                                             }
@@ -246,7 +247,7 @@ public class VideoPlayer implements IVLCVout.Callback {
                 });
     }
 
-    public void init(final SurfaceView surfaceView) {
+    public void init(final SurfaceView surfaceView, final boolean isVr) {
         mSurface = surfaceView;
         final int width = mSurface.getWidth();
         final int height = mSurface.getHeight();
@@ -283,6 +284,7 @@ public class VideoPlayer implements IVLCVout.Callback {
                             libVLC = null;
                         }
                         libVLC = new LibVLC(mSurface.getContext(), options);
+                        libVLC.setUserAgent(isVr ? "forceVr" : "normal", "http");
                         try {
                             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                                 mediaPlayer.stop();

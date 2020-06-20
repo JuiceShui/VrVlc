@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+color black
 id player_surface_frame
 id remote_player_surface
 id remote_player_surface_frame

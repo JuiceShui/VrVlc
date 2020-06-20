@@ -1,27 +1,18 @@
 package com.demo.vlcvr;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GestureDetectorCompat;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import org.videolan.libvlc.IVLCVout;
-import org.videolan.libvlc.MediaPlayer;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import java.util.concurrent.TimeUnit;
 
@@ -47,8 +38,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivAngleReset;
     private ImageView ivRollLeft;
     private ImageView ivRollRight;
+    private AppCompatButton btnChange;
     //private String url = "/sdcard/Download/vr3601.mp4";
-    private String url="rtsp://192.168.2.61/ff_test/123";
+    private String url = "rtsp://192.168.2.56/ff_test/123";
+    private String url2 = "rtsp://192.168.2.56/ff_test/124";
+    private boolean isUrl1 = true;
     private TouchEventDelegate delegate;
     private final Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
@@ -90,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sp = findViewById(R.id.sp);
         vp = findViewById(R.id.vp);
         hp = findViewById(R.id.hp);
+        btnChange = findViewById(R.id.btn_camera_change);
         ivRollLeft = findViewById(R.id.iv_roll_left);
         ivRollRight = findViewById(R.id.iv_roll_right);
         ivAngleReset = findViewById(R.id.iv_angle_reset);
@@ -101,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                videoPlayer.init(surfaceView);
+                videoPlayer.init(surfaceView, isUrl1);
                 setUrl();
             }
 
@@ -137,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (videoPlayer == null) {
             videoPlayer = new VideoPlayer();
         }
-        videoPlayer.startPlay(this.url);
+        videoPlayer.startPlay(isUrl1 ? this.url : this.url2);
         Observable.timer(5, TimeUnit.SECONDS)
                 .observeOn(Schedulers.single())
                 .subscribeOn(Schedulers.single())
@@ -162,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ivAngleReset.setOnClickListener(this);
         ivRollRight.setOnClickListener(this);
         ivRollLeft.setOnClickListener(this);
+        btnChange.setOnClickListener(this);
+
     }
 
     @Override
@@ -181,6 +178,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.iv_roll_right:
                 delegate.rollAngle(5);
+                break;
+            case R.id.btn_camera_change:
+                isUrl1 = !isUrl1;
+                videoPlayer.stopPlay();
+                videoPlayer.destroy();
+                videoPlayer.init(surfaceView, isUrl1);
+                setUrl();
                 break;
         }
     }

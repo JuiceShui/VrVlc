@@ -123,11 +123,14 @@ public class LibVLC extends VLCObject<LibVLC.Event> {
         nativeSetUserAgent(name, http);
     }
 
+    public void setForceVr(int isForceVr) {
+        nativeSetForceVr(isForceVr);
+    }
     /* JNI */
     private native void nativeNew(String[] options, String homePath);
     private native void nativeRelease();
     private native void nativeSetUserAgent(String name, String http);
-
+    private native void nativeSetForceVr(int isForceVr);
     private static boolean sLoaded = false;
 
     public static synchronized void loadLibraries() {

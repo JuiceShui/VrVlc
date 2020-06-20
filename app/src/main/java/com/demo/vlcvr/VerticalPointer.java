@@ -26,11 +26,19 @@ public class VerticalPointer extends View {
     private float drawHeight/* = 2 * (mRadius - mSpace)*/;//划线的高高度
     private float translateX/* = mRadius / 20*/;//绘制刻度时圆心移动的X轴方向绝对值
     private float scaleTranslateX /*= mRadius / 4*/;//绘制刻度尺时，刻度尺向X轴偏离的数值，左边的刻度尺向左偏移则为负值，右边的向右偏移则为正值
-    private int mDegreeBoard = 0;
-    private int mInitDegree = 90;
-    private int mDegreeCenter = 0;
+    private int mDegreeBoard = 0;//表盘度数，及用户操作改变的度数
+    private int mInitDegree = 90;//默认初始附加度数，表盘显示总度数180，（-90,90），度数0度在中间，所以附加一个90度的附加度数
+    private int mDegreeCenter = 0;//中心度数，及设备改变的度数
     int lineWidth = 20;//刻度尺长度
     int longLineWidth = 6;//关键位刻度尺比普通刻度尺的多余长度
+    private int[] angle = new int[]{0, 15, 30, 45, 60, 75, 90, 75, 60, 45, 30, 15,
+            0, -15, -30, -45, -60, -75, -90, -75, -60, -45, -30, -15};//当度数为正时显示的角度对应关系
+    private int[] negeAngle = new int[]{0, -15, -30, -45, -60, -75, -90, -75, -60, -45, -30, -15,
+            0, 15, 30, 45, 60, 75, 90, 75, 60, 45, 30, 15};//当度数为负时显示的角度对应关系
+    private int[] degree = new int[]{0, 15, 30, 45, 60, 75, 90, 105, 120, 135,
+            150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};//当度数为正时对应的key表
+    private int[] negeDegree = new int[]{0, -15, -30, -45, -60, -75, -90, -105, -120, -135,
+            -150, -165, -180, -195, -210, -225, -240, -255, -270, -285, -300, -315, -330, -345};//当度数为负时对应的key表
 
     public VerticalPointer(Context context) {
         this(context, null);
@@ -147,31 +155,48 @@ public class VerticalPointer extends View {
         float singleScaleSpace = drawHeight / (scaleCount - 1);//单个刻度尺标的间隔高度
         //绘制左边的刻度
         canvas.save();
-        canvas.translate(-translateX, translateY);
-        int totalDegree = mInitDegree + mDegreeBoard;
-        int zeroIndex = findZero(totalDegree);
+        canvas.translate(-translateX, translateY);//canvas移动
+        int totalDegree = mInitDegree + mDegreeBoard;//度数+默认附加值
+        int zeroIndex = findZero(totalDegree);//找到0刻度尺的位置
         Log.e("TAG", zeroIndex + "");
         for (int i = 0; i < scaleCount; i++) {
             String text = "";
             int realDegree;
-            if ((i - zeroIndex) % 3 == 0) {
-                if (totalDegree - (5 * i) > 90) {
-                    realDegree = 2 * mInitDegree - (totalDegree - (5 * i)) + findMod(totalDegree);
-                } else if (totalDegree - (5 * i) < -90) {
-                    realDegree = mInitDegree + (totalDegree - (5 * i)) - findMod(totalDegree);
-                } else {
-                    realDegree = (totalDegree - (5 * i)) - findMod(totalDegree);
+            if ((i - zeroIndex) % 3 == 0) {//如果是5的倍数，即要绘制度数的指示的刻度
+                realDegree = (totalDegree - (5 * i)) - findMod(totalDegree);//真正绘制的度数
+                if (realDegree >= 90) {
+                    realDegree = 2 * mInitDegree - realDegree;//转化为-90----90度
+                } else if (realDegree < -90 && realDegree >= -180) {
+                    realDegree = -(2 * mInitDegree + realDegree);
+                } else if (realDegree < -180) {
+                    realDegree = -((2 * mInitDegree) + realDegree);
                 }
-                if (i == zeroIndex) {
+                if (i == zeroIndex) {//如果是0刻度
                     realDegree = 0;
                     text = realDegree + "";
                     mPaint.setColor(getContext().getResources().getColor(R.color.color_red_half));
-                } else if (realDegree == 0) {
+                } else if (realDegree == 0) {//如果计算出的值为0
                     text = realDegree + "";
                     mPaint.setColor(getContext().getResources().getColor(R.color.color_red_half));
                 } else {
                     text = realDegree + "";
+                    if (realDegree > 0) {//如果度数>0
+                        for (int m = 0; m < degree.length; m++) {
+                            if (realDegree == degree[m]) {
+                                text = "" + angle[m];//查表获得实际显示的度数
+                            }
+                        }
+                    } else {//度数小于0
+                        for (int m = 0; m < negeDegree.length; m++) {
+                            if (realDegree == negeDegree[m]) {
+                                text = "" + negeAngle[m];//查表获得实际显示的度数
+                            }
+                        }
+                    }
                     mPaint.setColor(mColorLong);
+                    if (text.equals("0")) {//如果查表查出的值为0
+                        mPaint.setColor(getContext().getResources().getColor(R.color.color_red_half));
+                    }
                 }
                 mPaint.setTextSize(mTextSize);
                 mPaint.setStrokeWidth(SizeUtil.Dp2Px(getContext(), 1.5f));
@@ -194,12 +219,13 @@ public class VerticalPointer extends View {
             String text = "";
             int realDegree;
             if ((i - zeroIndex) % 3 == 0) {
-                if (totalDegree - (5 * i) > 90) {
-                    realDegree = 2 * mInitDegree - (totalDegree - (5 * i)) + findMod(totalDegree);
-                } else if (totalDegree - (5 * i) < -90) {
-                    realDegree = mInitDegree + (totalDegree - (5 * i)) - findMod(totalDegree);
-                } else {
-                    realDegree = (totalDegree - (5 * i)) - findMod(totalDegree);
+                realDegree = (totalDegree - (5 * i)) - findMod(totalDegree);
+                if (realDegree >= 90) {
+                    realDegree = 2 * mInitDegree - realDegree;
+                } else if (realDegree < -90 && realDegree >= -180) {
+                    realDegree = -(2 * mInitDegree + realDegree);
+                } else if (realDegree < -180) {
+                    realDegree = -((2 * mInitDegree) + realDegree);
                 }
                 if (i == zeroIndex) {
                     realDegree = 0;
@@ -210,7 +236,23 @@ public class VerticalPointer extends View {
                     mPaint.setColor(getContext().getResources().getColor(R.color.color_red_half));
                 } else {
                     text = realDegree + "";
+                    if (realDegree > 0) {
+                        for (int m = 0; m < degree.length; m++) {
+                            if (realDegree == degree[m]) {
+                                text = "" + angle[m];
+                            }
+                        }
+                    } else {
+                        for (int m = 0; m < negeDegree.length; m++) {
+                            if (realDegree == negeDegree[m]) {
+                                text = "" + negeAngle[m];
+                            }
+                        }
+                    }
                     mPaint.setColor(mColorLong);
+                    if (text.equals("0")) {
+                        mPaint.setColor(getContext().getResources().getColor(R.color.color_red_half));
+                    }
                 }
                 mPaint.setTextSize(mTextSize);
                 mPaint.setStrokeWidth(SizeUtil.Dp2Px(getContext(), 1.5f));
@@ -270,10 +312,10 @@ public class VerticalPointer extends View {
     }
 
     public void changeDegreeBoard(float degree) {
-        if (mDegreeBoard == -(int) (degree % 180)) {
+        if (mDegreeBoard == -(int) (degree % 360)) {
             return;
         }
-        this.mDegreeBoard = -(int) (degree % 180);
+        this.mDegreeBoard = -(int) (degree % 360);
         invalidate();
     }
 

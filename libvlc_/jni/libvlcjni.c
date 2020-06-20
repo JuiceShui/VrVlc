@@ -502,3 +502,7 @@ void Java_org_videolan_libvlc_LibVLC_nativeSetUserAgent(JNIEnv* env,
     if (!psz_name || !psz_http)
         throw_Exception(env, VLCJNI_EX_ILLEGAL_ARGUMENT, "name or http invalid");
 }
+
+void Java_org_videolan_libvlc_LibVLC_nativeSetForceVr(JNIEnv* env,jobject thiz,jint jisForceVr){
+    libvlc_set_force_vr(jisForceVr);
+}
