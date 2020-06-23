@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String url = "rtsp://192.168.2.56/ff_test/123";
     private String url2 = "rtsp://192.168.2.56/ff_test/124";
     private boolean isUrl1 = true;
-    private TouchEventDelegate delegate;
+    private TouchEventDelegateBackStore delegate;
     private final Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-        delegate = new TouchEventDelegate(videoPlayer, this);
+        delegate = new TouchEventDelegateBackStore(videoPlayer, this);
         initListener();
     }
 

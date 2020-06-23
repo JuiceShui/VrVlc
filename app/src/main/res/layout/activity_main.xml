@@ -13,13 +13,23 @@
 
     <ImageView
         android:id="@+id/iv_angle_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
         android:layout_gravity="end|top"
         android:layout_marginTop="30dp"
         android:background="@color/color_black_mask"
         android:padding="16dp"
         android:src="@mipmap/ic_angle_reset" />
+
+    <ImageView
+        android:id="@+id/iv_mode_change"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="100dp"
+        android:background="@color/color_black_mask"
+        android:padding="16dp"
+        android:src="@mipmap/ic_touch_mode" />
 
     <LinearLayout
         android:id="@+id/ll_vr_container"

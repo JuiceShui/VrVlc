@@ -1,6 +1,5 @@
 package com.demo.vlcvr;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.DisplayMetrics;
@@ -12,13 +11,14 @@ import android.view.ScaleGestureDetector;
 import androidx.core.view.GestureDetectorCompat;
 
 import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.MediaPlayer;
 
 public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureListener {
-    private VideoPlayer videoPlayer;
+    private MediaPlayer mediaPlayer;
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetectorCompat mDetector = null;
     private float mFov = 80f;
-    private float DEFAULT_FOV = 80f;
+    public static float DEFAULT_FOV = 80f;
     private static final float MIN_FOV = 20f;
     private static final float MAX_FOV = 150f;
     private int mSurfaceYDisplayRange, mSurfaceXDisplayRange;
@@ -31,10 +31,10 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     private static final int TOUCH_MOVE = 3;
     private static final int TOUCH_SEEK = 4;
     private int mTouchAction = TOUCH_NONE;
-    private MainActivity activity;
+    private PlayerActivity activity;
 
-    public TouchEventDelegate(VideoPlayer videoPlayer, MainActivity activity) {
-        this.videoPlayer = videoPlayer;
+    public TouchEventDelegate(MediaPlayer mediaPlayer, PlayerActivity activity) {
+        this.mediaPlayer = mediaPlayer;
         this.activity = activity;
         activity.getWindowManager().getDefaultDisplay().getMetrics(mScreen);
         mSurfaceYDisplayRange = Math.min(mScreen.widthPixels, mScreen.heightPixels);
@@ -42,7 +42,7 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        if (videoPlayer.getMediaPlayer() == null)
+        if (mediaPlayer == null)
             return false;
         if (mDetector == null) {
             mDetector = new GestureDetectorCompat(activity, mGestureListener);
@@ -134,7 +134,7 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
                     bundle.putFloat("roll", 0);
                     message.setData(bundle);
                     activity.getHandler().sendMessage(message);
-                    videoPlayer.getMediaPlayer().updateViewpoint(yaw, pitch, pitch, 0, false);
+                    mediaPlayer.updateViewpoint(yaw, pitch, pitch, 0, false);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -151,9 +151,9 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     }
 
     private void sendMouseEvent(int action, int button, int x, int y) {
-        if (videoPlayer.getMediaPlayer() == null)
+        if (mediaPlayer == null)
             return;
-        final IVLCVout vlcVout = videoPlayer.getMediaPlayer().getVLCVout();
+        final IVLCVout vlcVout = mediaPlayer.getVLCVout();
         vlcVout.sendMouseEvent(action, button, x, y);
     }
 
@@ -186,10 +186,10 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
                     doPlayPause();
                 return true;
             }*/
-            if (videoPlayer.getMediaPlayer().isPlaying()) {
-                videoPlayer.getMediaPlayer().pause();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
             } else {
-                videoPlayer.getMediaPlayer().play();
+                mediaPlayer.play();
             }
             return false;
         }
@@ -199,7 +199,7 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         float diff = DEFAULT_FOV * (1 - detector.getScaleFactor());
-        if (videoPlayer.getMediaPlayer().updateViewpoint(0, 0, 0, diff, false)) {
+        if (mediaPlayer.updateViewpoint(0, 0, 0, diff, false)) {
             mFov = Math.min(Math.max(MIN_FOV, mFov + diff), MAX_FOV);
             return true;
         }
@@ -217,9 +217,9 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     }
 
     public void resetAngle() {
-        videoPlayer.getMediaPlayer().updateViewpoint(0, 0, 0, DEFAULT_FOV, true);
+        mediaPlayer.updateViewpoint(0, 0, 0, DEFAULT_FOV, true);
         Message message = new Message();
-        message.what = MainActivity.CHANGE_POINTER;
+        message.what = PlayerActivity.CHANGE_POINTER;
         Bundle bundle = new Bundle();
         bundle.putFloat("yaw", 0);
         bundle.putFloat("pitch", 0);
@@ -229,9 +229,9 @@ public class TouchEventDelegate implements ScaleGestureDetector.OnScaleGestureLi
     }
 
     public void rollAngle(float roll) {
-        if (videoPlayer.getMediaPlayer().updateViewpoint(0, 0, roll, 0, false)) {
+        if (mediaPlayer.updateViewpoint(0, 0, roll, 0, false)) {
             Message message = new Message();
-            message.what = MainActivity.CHANGE_POINTER;
+            message.what = PlayerActivity.CHANGE_POINTER;
             Bundle bundle = new Bundle();
             bundle.putFloat("yaw", 0);
             bundle.putFloat("pitch", 0);
