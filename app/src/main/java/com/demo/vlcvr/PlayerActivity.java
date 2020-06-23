@@ -37,9 +37,10 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
     private ImageView ivMotionMode;
     private Surface surface;
     private AppCompatButton btnChange;
-    private String url2 = "/sdcard/Download/vr3601.mp4";
-    private String url = "rtsp://192.168.2.56/ff_test/123";
-    //private String url2 = "rtsp://192.168.2.56/ff_test/124";
+    private String url2 = "/sdcard/Download/vr360.mp4";
+    private String url = "/sdcard/Download/vr3601.mp4";
+    //private String url = "rtsp://192.168.2.62/ff_test/123";
+    //private String url2 = "rtsp://192.168.2.62/ff_test/124";
     private boolean isVr = false;
     private TouchEventDelegate delegate;
     private boolean isTouchMode = false;
@@ -51,6 +52,9 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 return true;
             switch (msg.what) {
                 case CHANGE_POINTER:
+                    if (!isVr) {
+                        return false;
+                    }
                     Bundle bundle = msg.getData();
 
                    /* float yaw = (float) msg.obj;
@@ -93,7 +97,7 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
         ivMotionMode = findViewById(R.id.iv_mode_change);
         mUri = Uri.parse(isVr ? url : url2);
         initListener();
-        changeToSensorMode();
+        //changeToSensorMode();
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -103,7 +107,9 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 if (surface != null) {
                     vlcSetSurface(surface);
                 }
-                delegate = new TouchEventDelegate(mMediaPlayer, PlayerActivity.this);
+                if (isVr) {
+                    delegate = new TouchEventDelegate(mMediaPlayer, PlayerActivity.this);
+                }
             }
 
             @Override
@@ -124,7 +130,7 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isTouchMode) {
+        if (!isTouchMode || !isVr) {
             return super.onTouchEvent(event);
         }
         return delegate.onTouchEvent(event);
@@ -150,7 +156,7 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 optionTab.setVisibility(optionTab.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 break;
             case R.id.iv_angle_reset:
-                if (!isTouchMode) {
+                if (!isTouchMode || !isVr) {
                     return;
                 }
                 rotatedAngle = 0;
@@ -159,13 +165,13 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 delegate.resetAngle();
                 break;
             case R.id.iv_roll_left:
-                if (!isTouchMode) {
+                if (!isTouchMode || !isVr) {
                     return;
                 }
                 delegate.rollAngle(-5);
                 break;
             case R.id.iv_roll_right:
-                if (!isTouchMode) {
+                if (!isTouchMode || !isVr) {
                     return;
                 }
                 delegate.rollAngle(5);
@@ -176,19 +182,42 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 setVr(isVr);
                 createPlayer(mUri);
                 vlcSetSurface(surface);
+                if (!isVr) {
+                    if (delegate != null) {
+                        delegate = null;
+                    }
+                    if (sensorEventHandler != null) {
+                        sensorEventHandler.removeCallback();
+                        sensorEventHandler.releaseResources();
+                        sensorEventHandler = null;
+                    }
+                    return;
+                }
                 rotatedAngle = 0;
                 rotatedAngleVertical = 0;
                 rotateAngleHorizontal = 0;
                 if (isTouchMode) {
-                    delegate = null;
+                    if (sensorEventHandler != null) {
+                        sensorEventHandler.releaseResources();
+                    }
+                    if (delegate != null) {
+                        delegate = null;
+                    }
                     delegate = new TouchEventDelegate(mMediaPlayer, PlayerActivity.this);
+                    delegate.resetAngle();
                 } else {
+                    if (delegate != null) {
+                        delegate = null;
+                    }
                     sensorEventHandler = null;
                     mMediaPlayer.updateViewpoint(0, 0, 0, TouchEventDelegate.DEFAULT_FOV, true);
                     changeToSensorMode();
                 }
                 break;
             case R.id.iv_mode_change:
+                if (!isVr) {
+                    return;
+                }
                 isTouchMode = !isTouchMode;
                 ivMotionMode.setImageResource(isTouchMode ? R.mipmap.ic_motion_mode : R.mipmap.ic_touch_mode);
                 resetInitValue();
@@ -218,6 +247,11 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
     }
 
     private void changeToSensorMode() {
+        if (sensorEventHandler != null) {
+            sensorEventHandler.removeCallback();
+            sensorEventHandler.releaseResources();
+            sensorEventHandler = null;
+        }
         sensorEventHandler = new SensorEventHandler(mActivity);
         sensorEventHandler.init();
         sensorEventHandler.setSensorHandlerCallback(this);
@@ -225,8 +259,10 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
 
     @Override
     public void onDegreeChange(float[] degree) {
+        if (!isVr || isTouchMode) {
+            return;
+        }
         mMediaPlayer.updateViewpoint(degree[0], degree[1], degree[2], 0, false);
-        Log.e("DDDD", degree[0] + "  " + degree[1] + "    " + degree[2]);
     }
 
     private void resetInitValue() {
@@ -243,6 +279,7 @@ public class PlayerActivity extends VLCVideoActivity implements View.OnClickList
                 delegate.resetAngle();
             } else {
                 delegate = new TouchEventDelegate(mMediaPlayer, PlayerActivity.this);
+                delegate.resetAngle();
             }
         } else {
             if (sensorEventHandler != null) {

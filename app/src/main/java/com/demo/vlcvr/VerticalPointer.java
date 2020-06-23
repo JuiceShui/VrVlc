@@ -158,7 +158,6 @@ public class VerticalPointer extends View {
         canvas.translate(-translateX, translateY);//canvas移动
         int totalDegree = mInitDegree + mDegreeBoard;//度数+默认附加值
         int zeroIndex = findZero(totalDegree);//找到0刻度尺的位置
-        Log.e("TAG", zeroIndex + "");
         for (int i = 0; i < scaleCount; i++) {
             String text = "";
             int realDegree;
